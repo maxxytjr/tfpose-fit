@@ -2,7 +2,8 @@
 Exercise Applications for OpenPose
 
 ## Updates
-  * rev0 (19.2.2020): Fall detection and plank analysis
+  * rev0: Fall detection and plank analysis
+  * rev1: Added squat analysis
 
 ## Background
 Aside from using human judgement, physiotherapists or coaches can now use deep learning technologies to complement their judgement in sports performance or rehabilitation progress.
@@ -26,7 +27,10 @@ For example, in the terminal, run:
 
 `python run_pose_estimation_0.py --video plank.mp4 --model mobilenet_v2_small --tensorrt False --resize 640x480 --video_out plank_processed.mp4`
 
-Follow the instructions in the terminal to select the mode. As of `rev0`, there are 2 modes to choose from; *Fall detection* and *Plank*.
+Follow the instructions in the terminal to select the mode. As of `rev0`, there are 3 modes to choose from; *Fall detection* and *Plank*.
+
+## Example Results
+
 
 
 ## Acknowledgements
