@@ -120,12 +120,13 @@ if __name__ == '__main__':
     
     parser.add_argument('--tensorrt', type=str, default="False",
                         help='for tensorrt process.')
+    
     parser.add_argument('--video_out', type=str, default="processed_video.mp4",
                         help='name of directory of processed video file')
 
     args = parser.parse_args()
 
-    print("mode 0: Only Pose Estimation \nmode 1: Fall Detection \nmode 2: Plank Detection")
+    print("mode 0: Only Pose Estimation \nmode 1: Fall Detection \nmode 2: Plank Detection \nmode 3: Squat Analysis(Frontal)")
     mode = int(input("Enter a mode : "))
 
 
@@ -225,6 +226,59 @@ if __name__ == '__main__':
                 if angle_lshoulder_lhip_lfeet in range(50, 100) or angle_rshoulder_rhip_rfeet in range(50, 100):
                     action = "Downward Dog"
                     cv2.putText(image, action, (20, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                    
+        elif mode == 3:
+
+            squat_text = 'SQUAT'
+            caving_text = 'KNEES CAVING IN !!!'
+
+            squat_text_size = cv2.getTextSize(squat_text, cv2.FONT_HERSHEY_SIMPLEX, 2, 2)[0]
+            squat_text_x = int((image.shape[1] - squat_text_size[0])/2)
+
+            caving_text_size = cv2.getTextSize(caving_text, cv2.FONT_HERSHEY_SIMPLEX, 1.5, 3)[0]
+            caving_text_x = int((image.shape[1] - caving_text_size[0])/2)
+
+            rknee_xy = find_bodypart_xy(humans, 9)
+            rfeet_xy = find_bodypart_xy(humans, 10)
+            rhip_xy = find_bodypart_xy(humans, 8)
+
+            lknee_xy = find_bodypart_xy(humans, 12)
+            lfeet_xy = find_bodypart_xy(humans, 13)
+            lhip_xy = find_bodypart_xy(humans, 11)
+
+            head_xy = find_bodypart_xy(humans, 0)
+
+            rhip_rfeet_dist = int(get_euclidean_dist(rhip_xy, rfeet_xy))
+            lhip_lfeet_dist = int(get_euclidean_dist(lhip_xy, lfeet_xy))
+
+            average_hip_to_feet_dist = int((rhip_rfeet_dist + lhip_lfeet_dist)/2)
+
+            # knees cave in
+            if ((rknee_xy[0] > rfeet_xy[0]) or (lknee_xy[0] < lfeet_xy[0])) and head_xy[1] in range(300, int(height * 0.75)):
+                cv2.putText(image, "KNEES CAVING IN!!!",
+                        (caving_text_x, 200), cv2.FONT_HERSHEY_SIMPLEX, 1.5,
+                        (0, 0, 255), 3)
+
+            if (head_xy[1] in range(300, int(height * 0.75)) and ((rknee_xy[0] <= rfeet_xy[0]) or (lknee_xy[0] >= lfeet_xy[0]))):
+                cv2.putText(image, "SQUAT",
+                            (squat_text_x, 110), cv2.FONT_HERSHEY_SIMPLEX, 2,
+                            (0, 255, 0), 2)
+
+            cv2.putText(image, "r_knee: {}".format(rknee_xy[0]),
+                        (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                        (0, 140, 255), 2)
+
+            cv2.putText(image, "r_ankle: {}".format(rfeet_xy[0]),
+                        (10, 110), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                        (0, 140, 255), 2)
+
+            cv2.putText(image, "l_knee: {}".format(lknee_xy[0]),
+                        (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                        (0, 140, 255), 2)
+
+            cv2.putText(image, "l_ankle: {}".format(lfeet_xy[0]),
+                        (10,190), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                        (0, 140, 255), 2)
 
         elif mode == 0:
             pass
