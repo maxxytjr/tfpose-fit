@@ -30,8 +30,11 @@ For example, in the terminal, run:
 Follow the instructions in the terminal to select the mode. As of `rev0`, there are 3 modes to choose from; *Fall detection* and *Plank*.
 
 ## Example Results
+### Good form:
+![Good](https://github.com/maxxytjr/tfpose-fit/blob/master/squat0.JPG)
 
-
+### Compromised form:
+![Bad](https://github.com/maxxytjr/tfpose-fit/blob/master/squat1.JPG)
 
 ## Acknowledgements
 [Kim Ildoo](https://github.com/ildoonet) for the main tf-pose algorithm.
